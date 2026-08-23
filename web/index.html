@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RS Economie</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">RS</span><div><strong>ECONOMIE</strong><small>Financieel beheer</small></div></div>
+      <nav id="navigation">
+        <button class="nav active" data-page="overview">⌂ <span>Overzicht</span></button>
+        <button class="nav" data-page="transfer">⇄ <span>Overboeken</span></button>
+        <button class="nav" data-page="savings">◇ <span>Sparen</span></button>
+        <button class="nav" data-page="loans">▤ <span>Leningen</span></button>
+        <button class="nav" data-page="transactions">≡ <span>Transacties</span></button>
+        <button class="nav admin-only" data-page="admin">⚙ <span>Beheer</span></button>
+      </nav>
+      <div class="sidebar-user"><div class="avatar" id="avatar">R</div><div><strong id="sidebarName">Speler</strong><small>Veilige sessie</small></div></div>
+    </aside>
+
+    <section class="content">
+      <header><div><p class="eyebrow">RICO SCRIPTS</p><h1 id="pageTitle">Financieel overzicht</h1></div><button class="close" id="close" aria-label="Sluiten">×</button></header>
+
+      <section class="page active" data-page="overview">
+        <div class="hero">
+          <div><p>Welkom terug,</p><h2 id="welcomeName">Speler</h2><span>Bekijk en beheer jouw financiële situatie.</span></div>
+          <div class="hero-orb"><span>RS</span></div>
+        </div>
+        <div class="cards balances">
+          <article class="card balance primary"><span>Banksaldo</span><strong id="bankBalance">€0</strong><small>Direct beschikbaar</small></article>
+          <article class="card balance"><span>Contant</span><strong id="cashBalance">€0</strong><small>In je portemonnee</small></article>
+          <article class="card balance"><span>Spaargeld</span><strong id="savingsBalance">€0</strong><small id="savingsRate">Rente 0%</small></article>
+          <article class="card balance"><span>Kredietscore</span><strong id="creditScore">500</strong><small>Financiële betrouwbaarheid</small></article>
+        </div>
+        <article class="card"><div class="card-head"><div><span>Recente activiteit</span><small>De laatste geldmutaties</small></div><button class="link" data-goto="transactions">Alles bekijken →</button></div><div id="recentTransactions" class="transaction-list"></div></article>
+      </section>
+
+      <section class="page" data-page="transfer">
+        <div class="two-col">
+          <article class="card form-card"><div class="card-head"><div><span>Nieuwe overschrijving</span><small>Veilig en direct overboeken</small></div></div>
+            <form id="transferForm"><label>Ontvanger <input name="recipient" placeholder="Server-ID of identifier" required></label><label>Bedrag <div class="money-input"><b>€</b><input name="amount" type="number" min="1" required></div></label><label>Omschrijving <input name="description" maxlength="180" placeholder="Waarvoor is de betaling?"></label><button class="submit">Overschrijven <span>→</span></button></form>
+          </article>
+          <article class="card info-card"><div class="shield">✓</div><h3>Veilig overboeken</h3><p>Iedere overschrijving wordt server-side gecontroleerd en vastgelegd in je transactieoverzicht.</p><div class="available"><span>Beschikbaar saldo</span><strong id="transferAvailable">€0</strong></div></article>
+        </div>
+      </section>
+
+      <section class="page" data-page="savings">
+        <div class="savings-hero"><div><p>Jouw spaarrekening</p><strong id="savingsBig">€0</strong><span id="savingsYield">Je ontvangt periodiek rente.</span></div><div class="spark">↗</div></div>
+        <div class="two-col"><article class="card form-card"><div class="tabs"><button class="tab active" data-direction="deposit">Storten</button><button class="tab" data-direction="withdraw">Opnemen</button></div><form id="savingsForm"><input type="hidden" name="direction" value="deposit"><label>Bedrag <div class="money-input"><b>€</b><input name="amount" type="number" min="1" required></div></label><button class="submit">Bevestigen <span>→</span></button></form></article><article class="card info-card"><h3>Laat je geld groeien</h3><p>Spaargeld staat apart van je dagelijkse banksaldo en ontvangt automatisch de ingestelde rente.</p></article></div>
+      </section>
+
+      <section class="page" data-page="loans">
+        <div class="two-col"><article class="card form-card"><div class="card-head"><div><span>Lening aanvragen</span><small>Bekijk vooraf de kosten en looptijd</small></div></div><form id="loanForm"><label>Gewenst bedrag <div class="money-input"><b>€</b><input id="loanAmount" name="amount" type="number" min="1000" required></div></label><label>Looptijd <select id="loanTerm" name="term"></select></label><div class="loan-preview"><span>Geschat totaal</span><strong id="loanPreview">€0</strong></div><button class="submit">Lening aanvragen <span>→</span></button></form></article><article class="card"><div class="card-head"><div><span>Actieve leningen</span><small>Openstaand en volgende betaling</small></div></div><div id="loanList" class="loan-list"></div></article></div>
+      </section>
+
+      <section class="page" data-page="transactions"><article class="card full"><div class="card-head"><div><span>Transactieoverzicht</span><small>Volledige financiële historie</small></div><input id="transactionSearch" class="search" placeholder="Zoeken..."></div><div id="allTransactions" class="transaction-list"></div></article></section>
+
+      <section class="page admin-only" data-page="admin">
+        <div id="adminStats" class="cards balances"></div>
+        <div class="two-col"><article class="card form-card"><div class="card-head"><div><span>Economisch beleid</span><small>Serverbrede tarieven en bedragen</small></div></div><form id="policyForm"><label>Instelling <select name="key"><option value="income_tax">Inkomstenbelasting (%)</option><option value="sales_tax">Omzetbelasting (%)</option><option value="wealth_tax">Vermogensbelasting (%)</option><option value="benefit_amount">Uitkering (€)</option><option value="loan_interest">Leningrente (%)</option><option value="savings_interest">Spaarrente (%)</option></select></label><label>Nieuwe waarde <input name="value" type="number" step="0.01" min="0" required></label><button class="submit">Beleid opslaan</button></form></article><article class="card form-card"><div class="card-head"><div><span>Saldo corrigeren</span><small>Alle acties worden gelogd</small></div></div><form id="adminMutationForm"><label>Online speler-ID <input name="playerId" type="number" min="1" required></label><label>Actie <select name="action"><option value="add">Toevoegen</option><option value="remove">Verwijderen</option></select></label><label>Bedrag <input name="amount" type="number" min="1" required></label><label>Reden <input name="reason" maxlength="180" required></label><button class="submit danger">Correctie uitvoeren</button></form></article></div>
+        <article class="card"><div class="card-head"><div><span>Auditlog</span><small>Recente beheeracties</small></div></div><div id="auditList" class="transaction-list"></div></article>
+      </section>
+      <div id="toast" class="toast"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

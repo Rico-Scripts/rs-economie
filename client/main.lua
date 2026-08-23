@@ -25,6 +25,16 @@ local function setOpen(state, admin)
     end
 end
 
+exports('OpenDashboard', function(admin)
+    if isOpen then return false end
+    setOpen(true, admin == true)
+    return true
+end)
+
+exports('IsDashboardOpen', function()
+    return isOpen
+end)
+
 RegisterCommand(Config.Command, function()
     setOpen(true, false)
 end, false)

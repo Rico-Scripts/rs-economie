@@ -14,6 +14,7 @@ Complete economische beheerresource voor ESX Legacy, ontwikkeld door Rico Script
 - Beveiligde saldo-correcties voor administrators
 - Automatische integratie met `rs_discordlogs` en webhook-fallback
 - Volledige server-side validatie en rate limiting
+- Integratie-exports voor rs-banking, rs-billing en andere RS-resources
 
 ## Vereisten
 

@@ -1,6 +1,7 @@
 local ESX = exports.es_extended:getSharedObject()
 local cooldowns = {}
 local policies = {}
+local getAccount
 
 local function round(value)
     return math.floor((tonumber(value) or 0) + 0.5)
@@ -41,7 +42,35 @@ local function addTransaction(identifier, kind, amount, description, counterpart
     ]], { identifier, kind, amount, description, counterparty, balanceAfter, json.encode(metadata or {}) })
 end
 
-local function getAccount(identifier)
+exports('RecordTransaction', function(identifier, kind, amount, description, counterparty, balanceAfter, metadata)
+    if type(identifier) ~= 'string' or identifier == '' then return false end
+    addTransaction(
+        identifier,
+        tostring(kind or 'external'):sub(1, 40),
+        round(amount),
+        tostring(description or 'Externe transactie'):sub(1, 180),
+        counterparty and tostring(counterparty):sub(1, 80) or nil,
+        round(balanceAfter),
+        metadata
+    )
+    return true
+end)
+
+exports('GetPolicy', function(key)
+    return policies[tostring(key or '')]
+end)
+
+exports('GetFinancialSnapshot', function(identifier)
+    if type(identifier) ~= 'string' or identifier == '' then return nil end
+    local account = getAccount(identifier)
+    return {
+        savings = round(account.savings),
+        creditScore = round(account.credit_score),
+        activeDebt = round(MySQL.scalar.await("SELECT COALESCE(SUM(outstanding), 0) FROM rs_economy_loans WHERE identifier = ? AND status IN ('active','overdue')", { identifier }))
+    }
+end)
+
+getAccount = function(identifier)
     MySQL.insert.await('INSERT IGNORE INTO rs_economy_accounts (identifier) VALUES (?)', { identifier })
     return MySQL.single.await('SELECT savings, credit_score FROM rs_economy_accounts WHERE identifier = ?', { identifier })
 end
